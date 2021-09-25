@@ -6,7 +6,7 @@ RUN npm install
 COPY ./ergoMixFront ./
 RUN npm run build
 
-FROM openjdk:11-jre-slim as builder
+FROM openjdk:8-jre-slim as builder
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
     apt-get install -y --no-install-recommends apt-transport-https apt-utils bc dirmngr gnupg && \
@@ -18,9 +18,9 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends sbt wget sed
 WORKDIR /mixer
-RUN wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.2.0/graalvm-ce-java11-linux-amd64-21.2.0.tar.gz && \
-    tar -xf graalvm-ce-java11-linux-amd64-21.2.0.tar.gz
-ENV JAVA_HOME="/mixer/graalvm-ce-java11-21.2.0"
+RUN wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.2.0/graalvm-ce-java8-linux-amd64-21.2.0.tar.gz && \
+    tar -xf graalvm-ce-java8-linux-amd64-21.2.0.tar.gz
+ENV JAVA_HOME="/mixer/graalvm-ce-java8-21.2.0"
 ENV PATH="${JAVA_HOME}/bin:$PATH"
 ADD ["./appkit/", "/mixer/appkit"]
 WORKDIR /mixer/appkit
@@ -32,7 +32,7 @@ RUN sbt assembly
 RUN mv `find . -name ergoMixer-*.jar` /ergo-mixer.jar
 CMD ["java", "-jar", "/ergo-mixer.jar"]
 
-FROM openjdk:11-jre-slim
+FROM openjdk:8-jre-slim
 RUN adduser --disabled-password --home /home/ergo/ --uid 9052 --gecos "ErgoPlatform" ergo && \
     install -m 0750 -o ergo -g ergo  -d /home/ergo/mixer
 COPY --from=builder /ergo-mixer.jar /home/ergo/ergo-mixer.jar
