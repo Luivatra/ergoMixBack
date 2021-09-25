@@ -30,6 +30,10 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
       - 
-        name: Build/push ergomixer docker image     
+        name: Build/push ergomixer amd64 docker image     
         if: success()      
-        run: docker buildx build --platform ${DOCKER_TARGET_PLATFORM} --tag luivatra/mixer:latest --output type=image,push=true .
+        run: docker buildx build --platform linux/amd64 --tag luivatra/mixer:latest --output type=image,push=true .
+      - 
+        name: Build/push ergomixer arm64 docker image     
+        if: success()      
+        run: docker buildx build --platform linux/arm64 --tag luivatra/mixer:latest-arm64 --file Dockerfile-ARM64 --output type=image,push=true .
