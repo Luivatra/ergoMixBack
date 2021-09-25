@@ -6,15 +6,15 @@ RUN npm install
 COPY ./ergoMixFront ./
 RUN npm run build
 
-FROM openjdk:8-jre-slim as builder
+FROM openjdk:11-jre-slim as builder
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends apt-transport-https apt-utils bc dirmngr gnupg && \
-    echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823 && \
+#RUN apt-get update && \
+#    apt-get install -y --no-install-recommends apt-transport-https apt-utils bc dirmngr gnupg && \
+#    echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list && \
+#    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823 && \
     # seems that dash package upgrade is broken in Debian, so we hold it's version before update
-    echo "dash hold" | dpkg --set-selections && \
-    apt-get update && \
+#    echo "dash hold" | dpkg --set-selections && \
+RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends sbt wget sed
 WORKDIR /mixer
@@ -32,7 +32,7 @@ RUN sbt assembly
 RUN mv `find . -name ergoMixer-*.jar` /ergo-mixer.jar
 CMD ["java", "-jar", "/ergo-mixer.jar"]
 
-FROM openjdk:8-jre-slim
+FROM openjdk:11-jre-slim
 RUN adduser --disabled-password --home /home/ergo/ --uid 9052 --gecos "ErgoPlatform" ergo && \
     install -m 0750 -o ergo -g ergo  -d /home/ergo/mixer
 COPY --from=builder /ergo-mixer.jar /home/ergo/ergo-mixer.jar
