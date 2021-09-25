@@ -19,8 +19,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends sbt wget sed
 WORKDIR /mixer
 RUN wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.2.0/graalvm-ce-java11-linux-amd64-21.2.0.tar.gz && \
-    tar -xf graalvm-ce-java8-linux-amd64-21.2.0.tar.gz
-ENV JAVA_HOME="/mixer/graalvm-ce-java8-21.2.0"
+    tar -xf graalvm-ce-java11-linux-amd64-21.2.0.tar.gz
+ENV JAVA_HOME="/mixer/graalvm-ce-java11-21.2.0"
 ENV PATH="${JAVA_HOME}/bin:$PATH"
 ADD ["./appkit/", "/mixer/appkit"]
 WORKDIR /mixer/appkit
