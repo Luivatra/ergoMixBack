@@ -34,7 +34,8 @@ CMD ["java", "-jar", "/ergo-mixer.jar"]
 
 FROM openjdk:8-jre-slim
 RUN adduser --disabled-password --home /home/ergo/ --uid 9052 --gecos "ErgoPlatform" ergo && \
-    install -m 0750 -o ergo -g ergo  -d /home/ergo/mixer
+    install -m 0750 -o ergo -g ergo  -d /home/ergo/mixer && \
+    install -m 0750 -o ergo -g ergo  -d /home/ergo/ergoMixer
 COPY --from=builder /ergo-mixer.jar /home/ergo/ergo-mixer.jar
 COPY ./mixer/conf/application.conf /home/ergo/mixer/application.conf
 RUN chown ergo:ergo /home/ergo
